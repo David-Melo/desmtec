@@ -5,6 +5,7 @@
 //
 var http = require('http');
 var path = require('path');
+var fs = require('fs');
 
 var async = require('async');
 var socketio = require('socket.io');
@@ -43,6 +44,8 @@ io.on('connection', function (socket) {
         return;
 
       socket.get('name', function (err, name) {
+        if(err) console.log(err);
+        
         var data = {
           name: name,
           text: text
@@ -55,6 +58,7 @@ io.on('connection', function (socket) {
 
     socket.on('identify', function (name) {
       socket.set('name', String(name || 'Anonymous'), function (err) {
+        if(err) console.log(err);
         updateRoster();
       });
     });
@@ -67,6 +71,7 @@ function updateRoster() {
       socket.get('name', callback);
     },
     function (err, names) {
+      if(err) console.log(err);
       broadcast('roster', names);
     }
   );
@@ -78,7 +83,17 @@ function broadcast(event, data) {
   });
 }
 
-server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
+
+// write nginx tmp
+fs.writeFile("/tmp/app-initialized", "Ready to launch nginx", function(err) {
+    if(err) {
+        console.log(err);
+    } else {
+        console.log("The file was saved!");
+    }
+});
+
+server.listen('/tmp/nginx.socket', process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
   console.log("Chat server listening at", addr.address + ":" + addr.port);
 });
