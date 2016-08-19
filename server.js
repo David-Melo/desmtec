@@ -5,10 +5,19 @@
 //
 var http = require('http');
 var path = require('path');
+var fs = require('fs');
 
 var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
+
+fs.writeFile("/tmp/app-initialized", "Ready to launch nginx", function(err) {
+    if(err) {
+        console.log(err);
+    } else {
+        console.log("The file was saved!");
+    }
+});
 
 //
 // ## SimpleServer `SimpleServer(obj)`
@@ -78,7 +87,7 @@ function broadcast(event, data) {
   });
 }
 
-server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
+server.listen('/tmp/nginx.socket', process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
   console.log("Chat server listening at", addr.address + ":" + addr.port);
 });
