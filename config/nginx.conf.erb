@@ -58,6 +58,8 @@ http {
 		
 		location / {
 			root /mediasponge;
+			proxy_redirect http://app_server/mediasponge;
+			proxy_pass http://app_server;
 		}
 	}
 	
