@@ -87,6 +87,10 @@ function broadcast(event, data) {
   });
 }
 
+router.get('/mediasponge', function(req, res) {
+  res.send('hello world');
+});
+
 server.listen('/tmp/nginx.socket', process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
   console.log("Chat server listening at", addr.address + ":" + addr.port);
